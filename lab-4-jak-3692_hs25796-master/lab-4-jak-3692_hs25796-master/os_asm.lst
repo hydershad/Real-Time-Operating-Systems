@@ -1,0 +1,184 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         
+    2 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+    3 00000000         
+    4 00000000                 THUMB
+    5 00000000         ;EXPORT OS
+    6 00000000                 EXTERN           RunPt
+    7 00000000                 EXTERN           priorityPts
+    8 00000000                 EXPORT           StartOS
+    9 00000000                 EXPORT           SysTick_Handler
+   10 00000000         ;EXPORT OS_Wait
+   11 00000000         ;EXPORT OS_Signal
+   12 00000000         
+   13 00000000 4817    StartOS LDR              R0, =RunPt
+   14 00000002 6802            LDR              R2, [R0]
+   15 00000004 F8D2 D000       LDR              SP, [R2]
+   16 00000008 E8BD 0FF0       POP              {R4-R11}
+   17 0000000C BC0F            POP              {R0-R3}
+   18 0000000E F85D CB04       POP              {R12}
+   19 00000012 F85D EB04       POP              {LR}
+   20 00000016 F85D EB04       POP              {LR}
+   21 0000001A BC02            POP              {R1}
+   22 0000001C B662            CPSIE            I
+   23 0000001E 4770            BX               LR
+   24 00000020         
+   25 00000020         SysTick_Handler
+   26 00000020 B672            CPSID            I
+   27 00000022 E92D 0FF0       PUSH             {R4-R11}
+   28 00000026 480E            LDR              R0, =RunPt
+   29 00000028 6801            LDR              R1, [R0]
+   30 0000002A F8C1 D000       STR              SP, [R1]
+   31 0000002E 694A            LDR              R2, [R1, #20] ;loads priority i
+                                                            nto R2
+   32 00000030 F04F 33FF       MOV              R3, #-1
+   33 00000034 480B            LDR              R0, =priorityPts
+   34 00000036 F2A0 0004       ADD              R0, R0, #-4 ; need to subtract 
+                                                            4 to loop correctly
+                                                            
+   35 0000003A         
+   36 0000003A         checkAgain
+   37 0000003A F103 0301       ADD              R3, R3, #1  ; assumes there wil
+                                                            l always be a threa
+                                                            d running
+   38 0000003E F100 0004       ADD              R0, R0, #4
+   39 00000042 6801            LDR              R1, [R0]    ; offset of 4 times
+                                                             the index because 
+                                                            of pointer size
+   40 00000044 2900            CMP              R1, #0
+   41 00000046 D0F8            BEQ              checkAgain  ;if pointer is null
+                                                             we check next prio
+                                                            rity list
+   42 00000048 4805            LDR              R0, =RunPt
+   43 0000004A         ;LDR R1, [R1]
+   44 0000004A         ;LDR R3, [R1, #20] ;loads priority of whatever priority 
+                       thread we are looking at
+   45 0000004A 4293            CMP              R3, R2
+   46 0000004C D101            BNE              skip        ;if they are equal 
+                                                            priority we treat i
+                                                            t like normal
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   47 0000004E 6801            LDR              R1, [R0]    ;same priority norm
+                                                            al context switch
+   48 00000050 6849            LDR              R1, [R1, #4]
+   49 00000052         skip
+   50 00000052 6001            STR              R1, [R0]    ;higher priority re
+                                                            ady to go
+   51 00000054 F8D1 D000       LDR              SP, [R1]
+   52 00000058 E8BD 0FF0       POP              {R4-R11}
+   53 0000005C B662            CPSIE            I
+   54 0000005E 4770            BX               LR
+   55 00000060         
+   56 00000060         
+   57 00000060         
+   58 00000060         ;OS_Wait ;R0 points to counter
+   59 00000060         ;LDREX R1, [R0] ; counter 
+   60 00000060         ;SUBS R1, #1 ; counter -1, 
+   61 00000060         ;ITT PL ; ok if >= 0 
+   62 00000060         ;STREXPL R2,R1,[R0] ; try update 
+   63 00000060         ;CMPPL R2, #0 ; succeed? 
+   64 00000060         ;BNE OS_Wait ; no, try again 
+   65 00000060         ;BX LR 
+   66 00000060         
+   67 00000060         
+   68 00000060         
+   69 00000060         ;OS_Signal ; R0 points to counter 
+   70 00000060         ;LDREX R1, [R0] ; counter 
+   71 00000060         ;ADD R1, #1 ; counter + 1 
+   72 00000060         ;STREX R2,R1,[R0] ; try update 
+   73 00000060         ;CMP R2, #0 ; succeed? 
+   74 00000060         ;BNE OS_Signal ;no, try again 
+   75 00000060         ;BX LR
+   76 00000060         
+   77 00000060         
+   78 00000060                 ALIGN
+   79 00000060                 END
+              00000000 
+              00000000 
+Command Line: --debug --xref --cpu=Cortex-M4 --apcs=interwork --depend=.\os_asm
+.d -o.\os_asm.o -IC:\Keil\ARM\RV31\INC -IC:\Keil\ARM\CMSIS\Include -IC:\Keil\AR
+M\Inc\Luminary --list=.\os_asm.lst OS_asm.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 2 in file OS_asm.s
+   Uses
+      None
+Comment: .text unused
+StartOS 00000000
+
+Symbol: StartOS
+   Definitions
+      At line 13 in file OS_asm.s
+   Uses
+      At line 8 in file OS_asm.s
+Comment: StartOS used once
+SysTick_Handler 00000020
+
+Symbol: SysTick_Handler
+   Definitions
+      At line 25 in file OS_asm.s
+   Uses
+      At line 9 in file OS_asm.s
+Comment: SysTick_Handler used once
+checkAgain 0000003A
+
+Symbol: checkAgain
+   Definitions
+      At line 36 in file OS_asm.s
+   Uses
+      At line 41 in file OS_asm.s
+Comment: checkAgain used once
+skip 00000052
+
+Symbol: skip
+   Definitions
+      At line 49 in file OS_asm.s
+   Uses
+      At line 46 in file OS_asm.s
+Comment: skip used once
+5 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+RunPt 00000000
+
+Symbol: RunPt
+   Definitions
+      At line 6 in file OS_asm.s
+   Uses
+      At line 13 in file OS_asm.s
+      At line 28 in file OS_asm.s
+      At line 42 in file OS_asm.s
+
+priorityPts 00000000
+
+Symbol: priorityPts
+   Definitions
+      At line 7 in file OS_asm.s
+   Uses
+      At line 33 in file OS_asm.s
+Comment: priorityPts used once
+2 symbols
+339 symbols in table

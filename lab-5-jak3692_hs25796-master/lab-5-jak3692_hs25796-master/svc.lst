@@ -1,0 +1,194 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;SVC Handler
+    2 00000000         
+    3 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+    4 00000000                 PRESERVE8
+    5 00000000                 THUMB
+    6 00000000                 EXPORT           SVC_Handler
+    7 00000000                 EXPORT           triggerSVC
+    8 00000000                 EXTERN           RunPt       ; currently running
+                                                             thread
+    9 00000000                 EXTERN           NextRunPt   ; point to next thr
+                                                            ead to run
+   10 00000000         ;OS kernel functions
+   11 00000000         
+   12 00000000                 EXTERN           OS_Id
+   13 00000000                 EXTERN           OS_Kill
+   14 00000000                 EXTERN           OS_Sleep
+   15 00000000                 EXTERN           OS_Time
+   16 00000000                 EXTERN           OS_AddThread
+   17 00000000         
+   18 00000000         
+   19 00000000         SVC_Handler
+   20 00000000 F8DD C018       LDR              R12, [SP, #24] ; RETURN ADDRESS
+                                                            
+   21 00000004 F83C CC02       LDRH             R12, [R12, #-2] ; SVC INSTRUCTI
+                                                            ON 2 BYTES
+   22 00000008 F42C 4C7F       BIC              R12, #0xFF00 ; EXTRACT TRAP NUM
+                                                            BER IN R12
+   23 0000000C E89D 000F       LDM              SP, {R0-R3} ; GET PARAMETERS
+   24 00000010         
+   25 00000010 B500            PUSH             {LR}
+   26 00000012         
+   27 00000012 F8DF E03C       LDR              LR, = Return ;store link to com
+                                                            e back to end of sv
+                                                            c handler
+   28 00000016 F1BC 0F00       CMP              R12, #0
+   29 0000001A F43F AFFE       BEQ              OS_Id       ;case statement bas
+                                                            ed on svc call argu
+                                                            ment
+   30 0000001E F1BC 0F01       CMP              R12, #1
+   31 00000022 F43F AFFE       BEQ              OS_Kill
+   32 00000026 F1BC 0F02       CMP              R12, #2
+   33 0000002A F43F AFFE       BEQ              OS_Sleep
+   34 0000002E F1BC 0F03       CMP              R12, #3
+   35 00000032 F43F AFFE       BEQ              OS_Time
+   36 00000036 F1BC 0F04       CMP              R12, #4
+   37 0000003A F43F AFFE       BEQ              OS_AddThread
+   38 0000003E         
+   39 0000003E F85D EB04 
+                       Return  POP              {LR}        ;RETURN TO PROCESS 
+                                                            LINK
+   40 00000042 9000            STR              R0,[SP]     ; Store return valu
+                                                            e
+   41 00000044 4770            BX               LR          ; Return from excep
+                                                            tion
+   42 00000046         ;ADD STUFF?
+   43 00000046         
+   44 00000046         
+   45 00000046         ;RUNS THE OS FUNCTION
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   46 00000046 9000            STR              R0, [SP]    ;RETURN STORE RETUR
+                                                            N VALUE FROM OS FUN
+                                                            CTION
+   47 00000048 4770            BX               LR          ;RETURN TO THE USER
+                                                            PROCESS/OS_SUSPEND
+   48 0000004A         
+   49 0000004A         
+   50 0000004A         ;TRIGGER SVC CALL FROM OS_ASM SUSPEND USING "SVC #XXX", 
+                       WHERE XXX IS THE OS ROUTINE TRAP NUMBER
+   51 0000004A         
+   52 0000004A         triggerSVC
+   53 0000004A DF02            SVC              #2
+   54 0000004C 4770            BX               LR
+   55 0000004E         
+   56 0000004E 00 00           ALIGN
+   57 00000050                 END
+              00000000 
+Command Line: --debug --xref --cpu=Cortex-M4 --apcs=interwork --depend=.\svc.d 
+-o.\svc.o -IC:\Keil\ARM\RV31\INC -IC:\Keil\ARM\CMSIS\Include -IC:\Keil\ARM\Inc\
+Luminary --list=.\svc.lst svc.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 3 in file svc.s
+   Uses
+      None
+Comment: .text unused
+Return 0000003E
+
+Symbol: Return
+   Definitions
+      At line 39 in file svc.s
+   Uses
+      At line 27 in file svc.s
+Comment: Return used once
+SVC_Handler 00000000
+
+Symbol: SVC_Handler
+   Definitions
+      At line 19 in file svc.s
+   Uses
+      At line 6 in file svc.s
+Comment: SVC_Handler used once
+triggerSVC 0000004A
+
+Symbol: triggerSVC
+   Definitions
+      At line 52 in file svc.s
+   Uses
+      At line 7 in file svc.s
+Comment: triggerSVC used once
+4 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+NextRunPt 00000000
+
+Symbol: NextRunPt
+   Definitions
+      At line 9 in file svc.s
+   Uses
+      None
+Comment: NextRunPt unused
+OS_AddThread 00000000
+
+Symbol: OS_AddThread
+   Definitions
+      At line 16 in file svc.s
+   Uses
+      At line 37 in file svc.s
+Comment: OS_AddThread used once
+OS_Id 00000000
+
+Symbol: OS_Id
+   Definitions
+      At line 12 in file svc.s
+   Uses
+      At line 29 in file svc.s
+Comment: OS_Id used once
+OS_Kill 00000000
+
+Symbol: OS_Kill
+   Definitions
+      At line 13 in file svc.s
+   Uses
+      At line 31 in file svc.s
+Comment: OS_Kill used once
+OS_Sleep 00000000
+
+Symbol: OS_Sleep
+   Definitions
+      At line 14 in file svc.s
+   Uses
+      At line 33 in file svc.s
+Comment: OS_Sleep used once
+OS_Time 00000000
+
+Symbol: OS_Time
+   Definitions
+      At line 15 in file svc.s
+   Uses
+      At line 35 in file svc.s
+Comment: OS_Time used once
+RunPt 00000000
+
+Symbol: RunPt
+   Definitions
+      At line 8 in file svc.s
+   Uses
+      None
+Comment: RunPt unused
+7 symbols
+343 symbols in table

@@ -1,0 +1,54 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+C:\Users\hyder\Documents\GitHub\EE445M-Sp19-lab-2-jak3692_hs25796\PeriodicTimer0AInts.uvproj
+Project File Date:  02/19/2019
+
+<h2>Output:</h2>
+Rebuild target 'PeriodicTimer0AInts'
+assembling startup.s...
+compiling PeriodicTimer0AInts.c...
+compiling Timer0A.c...
+compiling PLL.c...
+assembling cr4_fft_64_stm32.s...
+assembling PID_stm32.s...
+compiling lab2.c...
+lab2.c(110): warning:  #223-D: function "ADC_In" declared implicitly
+      input = ADC_In();           // channel set when calling ADC_Init
+lab2.c(233): warning:  #223-D: function "ADC_Collect" declared implicitly
+    ADC_Collect(5, FS, &Producer); // start ADC sampling, channel 5, PD2, 400 Hz
+lab2.c(343): warning:  #223-D: function "ADC_Init" declared implicitly
+    ADC_Init(4);  // sequencer 3, channel 4, PD3, sampling in DAS()
+lab2.c: 3 warnings, 0 errors
+compiling interpreter.c...
+compiling ST7735.c...
+compiling UART.c...
+compiling ADC.c...
+compiling OS.c...
+OS.c(114): warning:  #223-D: function "StartCritical" declared implicitly
+  status = StartCritical();
+OS.c(120): warning:  #223-D: function "EndCritical" declared implicitly
+        EndCritical(status);
+OS.c: 2 warnings, 0 errors
+linking...
+.\PeriodicTimer0AInts.axf: Error: L6200E: Symbol tronboot multiply defined (by interpreter.o and lab2.o).
+Not enough information to list image symbols.
+Not enough information to list the image map.
+Finished: 2 information, 0 warning and 1 error messages.
+".\PeriodicTimer0AInts.axf" - 1 Error(s), 5 Warning(s).
+Target not created
+mer0AInts.axf: Error: L6200E: Symbol RxFifo_Get multiply defined (by uart.o and fifo.o).
+.\PeriodicTimer0AInts.axf: Error: L6200E: Symbol RxFifo_Init multiply defined (by uart.o and fifo.o).
+.\PeriodicTimer0AInts.axf: Error: L6200E: Symbol RxFifo_Put multiply defined (by uart.o and fifo.o).
+.\PeriodicTimer0AInts.axf: Error: L6200E: Symbol RxFifo_Size multiply defined (by uart.o and fifo.o).
+.\PeriodicTimer0AInts.axf: Error: L6200E: Symbol TxFifo_Get multiply defined (by uart.o and fifo.o).
+.\PeriodicTimer0AInts.axf: Error: L6200E: Symbol TxFifo_Init multiply defined (by uart.o and fifo.o).
+.\PeriodicTimer0AInts.axf: Error: L6200E: Symbol TxFifo_Put multiply defined (by uart.o and fifo.o).
+.\PeriodicTimer0AInts.axf: Error: L6200E: Symbol TxFifo_Size multiply defined (by uart.o and fifo.o).
+Not enough information to list image symbols.
+Not enough information to list the image map.
+Finished: 2 information, 0 warning and 11 error messages.
+".\PeriodicTimer0AInts.axf" - 11 Error(s), 5 Warning(s).
+Target not created

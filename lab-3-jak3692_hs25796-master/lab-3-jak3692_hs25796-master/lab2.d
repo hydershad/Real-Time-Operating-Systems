@@ -1,0 +1,12 @@
+.\lab2.o: lab2.c
+.\lab2.o: OS.h
+.\lab2.o: tm4c123gh6pm.h
+.\lab2.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\lab2.o: ST7735.h
+.\lab2.o: ADC.h
+.\lab2.o: UART.h
+.\lab2.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
+.\lab2.o: SysTickInts.h
+.\lab2.o: Timer2.h
+.\lab2.o: PLL.h
+.\lab2.o: Interpreter.h
